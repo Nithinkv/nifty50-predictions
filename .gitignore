@@ -1,0 +1,16 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.streamlit/
+.cache/
+.DS_Store
+*.csv
+*.parquet
+output/
+.env

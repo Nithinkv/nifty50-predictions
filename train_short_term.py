@@ -180,12 +180,26 @@ pd.DataFrame([metrics]).to_csv(os.path.join(OUTPUT_DIR, "metrics_short.csv"), in
 preds_wf.to_csv(os.path.join(OUTPUT_DIR, "preds_short_walkfwd.csv"), index=False)
 print("Saved backtest and metrics to output/")
 
-# TRAIN final model on all available data and save
-print("Training final model on ALL data...")
-X_all = df_model[feature_cols]
-y_all = df_model['fwd_ret']
-final_model = train_lgb(X_all, y_all, params=None, num_round=500)
-joblib.dump(final_model, os.path.join(MODEL_DIR, "short_term_lgb_all.pkl"))
-print("Saved final model:", os.path.join(MODEL_DIR, "short_term_lgb_all.pkl"))
+# TRAIN final model for EACH stock
+print("Training final models for EACH stock...")
+unique_symbols = df_model['symbol'].unique()
 
+for sym in tqdm(unique_symbols, desc="Training per-stock models"):
+    # Filter data for this symbol
+    mask = df_model['symbol'] == sym
+    X_sym = df_model.loc[mask, feature_cols]
+    y_sym = df_model.loc[mask, 'fwd_ret']
+    
+    if len(X_sym) < 50:
+        print(f"Skipping {sym} (not enough data: {len(X_sym)})")
+        continue
+        
+    # Train model
+    model = train_lgb(X_sym, y_sym, params=None, num_round=200) # Reduced rounds for speed per stock
+    
+    # Save model
+    safe_sym = sym.replace('.NS', '')
+    joblib.dump(model, os.path.join(MODEL_DIR, f"{safe_sym}.pkl"))
+
+print(f"Saved {len(unique_symbols)} models to {MODEL_DIR}/")
 print("Done.")

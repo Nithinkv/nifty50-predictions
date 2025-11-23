@@ -12,6 +12,7 @@ import numpy as np
 import joblib
 from datetime import datetime, timedelta
 import yfinance as yf
+import os
 from typing import Dict, Tuple
 import warnings
 warnings.filterwarnings('ignore')
@@ -91,9 +92,21 @@ NIFTY_50 = [
 # ============================================================================
 
 @st.cache_resource
-def load_model():
-    """Load the trained LightGBM model."""
-    return joblib.load("models/short_term_lgb_all.pkl")
+def load_model(symbol):
+    """Load the trained LightGBM model for a specific symbol."""
+    # Files are named like 'RELIANCE_NS.pkl' (dots replaced by underscores)
+    safe_sym = symbol.replace('.', '_')
+    model_path = f"models/{safe_sym}.pkl"
+    try:
+        return joblib.load(model_path)
+    except Exception as e1:
+        # Try alternative naming if first fails
+        try:
+            return joblib.load(f"models/{symbol.replace('.NS', '')}.pkl")
+        except Exception as e2:
+            # Only show error for first few to avoid spam
+            # st.error(f"Failed to load model for {symbol}: {e1} | {e2}")
+            return None
 
 def compute_features(symbol_df):
     """Compute all 12 required features for a single symbol."""
@@ -152,59 +165,66 @@ def compute_features(symbol_df):
         return None
 
 @st.cache_data(ttl=3600)
-def fetch_all_data(symbols, days=120):
-    """Fetch data for all symbols with caching. Use 120 calendar days for ~90 trading days."""
+def fetch_all_data(symbols, days=120, refresh_key=None):
+    """Fetch data for all symbols with caching using batch download."""
     data = {}
     end_date = datetime.now()
     start_date = end_date - timedelta(days=days)
     
-    progress_bar = st.progress(0)
     status_text = st.empty()
-    failed_symbols = []
+    status_text.text(f"Fetching data for {len(symbols)} stocks...")
     
-    for idx, sym in enumerate(symbols):
-        try:
-            status_text.text(f"Fetching {sym}... ({idx+1}/{len(symbols)})")
-            df = yf.download(sym, start=start_date, end=end_date, progress=False)
-            
-            if df.empty or len(df) == 0:
-                failed_symbols.append(sym)
-                continue
-            
-            if isinstance(df.columns, pd.MultiIndex):
-                df.columns = [col[0] if isinstance(col, tuple) else col for col in df.columns]
-            
-            if 'Adj Close' not in df.columns and 'Close' in df.columns:
-                df['AdjClose'] = df['Close']
-            elif 'Adj Close' in df.columns:
-                df['AdjClose'] = df['Adj Close']
-            
-            df.index.name = 'date'
-            df = df.reset_index()
-            data[sym] = df
-        except Exception as e:
-            failed_symbols.append(sym)
+    try:
+        # Batch download
+        df_all = yf.download(symbols, start=start_date, end=end_date, group_by='ticker', progress=False)
         
-        progress_bar.progress((idx + 1) / len(symbols))
-    
-    progress_bar.empty()
-    if failed_symbols:
-        status_text.warning(f"⚠️ Failed to fetch {len(failed_symbols)} stocks: {', '.join(failed_symbols)}")
-    else:
+        # Process each symbol
+        for sym in symbols:
+            try:
+                # Handle case where only one symbol is fetched (structure differs)
+                if len(symbols) == 1:
+                    df = df_all.copy()
+                else:
+                    df = df_all[sym].copy()
+                
+                if df.empty:
+                    continue
+                
+                # Drop rows with all NaNs
+                df = df.dropna(how='all')
+                
+                if len(df) == 0:
+                    continue
+
+                if 'Adj Close' not in df.columns and 'Close' in df.columns:
+                    df['AdjClose'] = df['Close']
+                elif 'Adj Close' in df.columns:
+                    df['AdjClose'] = df['Adj Close']
+                
+                df.index.name = 'date'
+                df = df.reset_index()
+                data[sym] = df
+            except Exception:
+                continue
+                
         status_text.empty()
-    return data
+        return data
+        
+    except Exception as e:
+        status_text.error(f"Error fetching data: {str(e)}")
+        return {}
 
 def get_signal(pred_score):
     """Determine trading signal from prediction score."""
-    if pred_score > 0.005:  # 0.5% for 5-day return
+    if pred_score > 0.02:  # 2.0% for 5-day return
         return "BUY", "🟢"
-    elif pred_score < -0.005:  # -0.5% for 5-day return
+    elif pred_score < -0.02:  # -2.0% for 5-day return
         return "SELL", "🔴"
     else:
         return "NEUTRAL", "🟡"
 
-def generate_predictions(model, data):
-    """Generate predictions for all symbols."""
+def generate_predictions(data):
+    """Generate predictions for all symbols using individual models."""
     predictions = []
     feature_cols = ['ret_1','ret_3','ret_5','ret_10','ret_20',
                     'ma_spread_5_20','ma_spread_5_50',
@@ -217,6 +237,13 @@ def generate_predictions(model, data):
     for idx, (symbol, df) in enumerate(data.items()):
         try:
             status_text.text(f"Predicting {symbol}... ({idx+1}/{len(data)})")
+            
+            # Load model for this specific stock
+            model = load_model(symbol)
+            if model is None:
+                skipped += 1
+                continue
+
             features = compute_features(df)
             
             if features is None:
@@ -258,7 +285,7 @@ def generate_predictions(model, data):
     
     progress_bar.empty()
     if skipped > 0:
-        status_text.info(f"⚠️ Skipped {skipped} stocks due to insufficient data")
+        status_text.info(f"⚠️ Skipped {skipped} stocks (missing data or model)")
     else:
         status_text.empty()
     return pd.DataFrame(predictions)
@@ -300,20 +327,38 @@ def main():
     Always use stop-losses and proper risk management.
     """)
     
-    # Load model
-    model = load_model()
-    
+    # Initialize session state key for refresh control
+    if 'refresh_data_ts' not in st.session_state:
+        st.session_state['refresh_data_ts'] = None
+
+    # If user requested an explicit refresh, clear cached data and rerun so fetch_all_data pulls fresh data
+    if refresh_data:
+        st.sidebar.info("Refreshing live data...")
+        # update session-state refresh key so cached function sees a different argument
+        st.session_state['refresh_data_ts'] = datetime.now().timestamp()
+        try:
+            # clear the cached data function results so next call fetches fresh data
+            st.cache_data.clear()
+        except Exception:
+            # older Streamlit versions may not have cache_data.clear(); attempt global memo clear
+            try:
+                st.experimental_memo_clear()
+            except Exception:
+                pass
+        st.sidebar.success("Cache cleared — fetching fresh data now.")
+
     # Fetch and predict
     st.info("📡 Fetching live market data for all NIFTY 50 stocks...")
-    data = fetch_all_data(NIFTY_50)
+    # pass session_state refresh key so cache is bypassed when user requested refresh
+    data = fetch_all_data(NIFTY_50, refresh_key=st.session_state.get('refresh_data_ts'))
     
     if not data:
         st.error("Failed to fetch data. Please check your internet connection.")
         return
     
     st.success(f"✓ Fetched data for {len(data)} stocks")
-    st.info("🤖 Generating predictions...")
-    predictions_df = generate_predictions(model, data)
+    st.info("🤖 Generating predictions using individual stock models...")
+    predictions_df = generate_predictions(data)
     
     if predictions_df.empty:
         st.error("No predictions generated. Please try again.")
@@ -399,9 +444,9 @@ def main():
                 - **Volume Z-Score**: Volume relative to 20-day average
                 
                 **Signal Thresholds:**
-                - **BUY**: Predicted return > +0.5% (5-day)
-                - **SELL**: Predicted return < -0.5% (5-day)
-                - **NEUTRAL**: Return between -0.5% to +0.5%
+                - **BUY**: Predicted return > +2.0% (5-day)
+                - **SELL**: Predicted return < -2.0% (5-day)
+                - **NEUTRAL**: Return between -2.0% to +2.0%
                 """)
     
     # Download results

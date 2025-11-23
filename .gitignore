@@ -14,5 +14,4 @@ build/
 *.parquet
 output/
 .env
-models/*.pkl
 

@@ -12,6 +12,8 @@ import numpy as np
 import joblib
 from datetime import datetime, timedelta
 import yfinance as yf
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import os
 from typing import Dict, Tuple
 import warnings
@@ -223,6 +225,47 @@ def get_signal(pred_score):
     else:
         return "NEUTRAL", "🟡"
 
+def create_chart(df, symbol, target_price):
+    """Create an interactive candlestick chart with overlays."""
+    # Filter last 6 months for better visibility
+    df_chart = df.iloc[-126:].copy()
+    
+    fig = make_subplots(rows=2, cols=1, shared_xaxes=True, 
+                        vertical_spacing=0.03, subplot_titles=(f'{symbol} Price', 'Volume'), 
+                        row_width=[0.2, 0.7])
+
+    # Candlestick
+    fig.add_trace(go.Candlestick(x=df_chart['date'],
+                open=df_chart['Open'],
+                high=df_chart['High'],
+                low=df_chart['Low'],
+                close=df_chart['Close'],
+                name='Price'), row=1, col=1)
+
+    # Moving Averages
+    if 'AdjClose' in df_chart.columns:
+        ma_20 = df_chart['AdjClose'].rolling(20).mean()
+        fig.add_trace(go.Scatter(x=df_chart['date'], y=ma_20, 
+                                 line=dict(color='orange', width=1), 
+                                 name='20-Day MA'), row=1, col=1)
+
+    # Target Price Line (dashed horizontal)
+    fig.add_hline(y=target_price, line_dash="dash", line_color="blue", 
+                  annotation_text=f"Target: {target_price:.2f}", 
+                  row=1, col=1)
+
+    # Volume
+    fig.add_trace(go.Bar(x=df_chart['date'], y=df_chart['Volume'], 
+                         name='Volume', marker_color='teal'), row=2, col=1)
+
+    fig.update_layout(
+        height=500,
+        xaxis_rangeslider_visible=False,
+        template="plotly_white",
+        margin=dict(l=10, r=10, t=30, b=10)
+    )
+    return fig
+
 def generate_predictions(data):
     """Generate predictions for all symbols using individual models."""
     predictions = []
@@ -421,6 +464,12 @@ def main():
         
         # Expandable details
         with st.expander(f"📊 Details for {row['Symbol']}"):
+            # Interactive Chart
+            chart_df = data.get(row['Symbol'] + '.NS')
+            if chart_df is not None:
+                fig = create_chart(chart_df, row['Symbol'], row['Target Price'])
+                st.plotly_chart(fig, use_container_width=True)
+            
             det_col1, det_col2 = st.columns(2)
             
             with det_col1:

@@ -6,3 +6,4 @@ yfinance
 streamlit
 joblib
 pyarrow
+plotly

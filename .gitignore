@@ -15,3 +15,5 @@ build/
 output/
 .env
 
+
+paper_trading_data/

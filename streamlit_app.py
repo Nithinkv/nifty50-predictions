@@ -15,6 +15,8 @@ import yfinance as yf
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import os
+from paper_trading import PaperTrading
+from portfolio_view import show_portfolio
 from typing import Dict, Tuple
 import warnings
 warnings.filterwarnings('ignore')
@@ -339,9 +341,35 @@ def generate_predictions(data):
 
 def main():
     st.title("📈 NIFTY 50 Stock Predictions")
+    
+    # Initialize Paper Trading
+    if 'pt' not in st.session_state:
+        st.session_state.pt = PaperTrading()
+    pt = st.session_state.pt
+
+    # Sidebar Navigation
+    view = st.sidebar.radio("Navigation", ["Market Dashboard", "My Portfolio"])
+    
+    # Paper Trading Sidebar Summary
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 💰 Paper Trading")
+    st.sidebar.metric("Cash Balance", f"₹{pt.balance:,.2f}")
+    if not pt.portfolio.empty:
+        st.sidebar.markdown(f"**Invested:** {len(pt.portfolio)} stocks")
+    
+    if st.sidebar.button("Reset Account", type="primary"):
+        pt.reset_account()
+        st.sidebar.success("Account reset!")
+        st.rerun()
+
+    if view == "My Portfolio":
+        show_portfolio(pt, fetch_all_data)
+        return
+
+    # --- MARKET DASHBOARD VIEW ---
     st.subheader("Live market analysis powered by LightGBM ML model")
     
-    # Sidebar
+    # Sidebar Settings (Only for Dashboard)
     st.sidebar.markdown("### ⚙️ Settings")
     refresh_data = st.sidebar.button("🔄 Refresh Data", use_container_width=True)
     show_details = st.sidebar.checkbox("📊 Show Technical Details", value=False)
@@ -470,6 +498,39 @@ def main():
                 fig = create_chart(chart_df, row['Symbol'], row['Target Price'])
                 st.plotly_chart(fig, use_container_width=True)
             
+            # Paper Trading Controls
+            st.markdown("#### 💸 Trade")
+            pt_col1, pt_col2, pt_col3 = st.columns([1, 1, 2])
+            
+            with pt_col1:
+                qty = st.number_input("Qty", min_value=1, value=10, key=f"qty_{row['Symbol']}")
+            
+            with pt_col2:
+                if st.button(f"Buy @ ₹{row['Current Price']:.2f}", key=f"buy_{row['Symbol']}"):
+                    success, msg = pt.buy_stock(row['Symbol'], qty, row['Current Price'])
+                    if success:
+                        st.success(f"Bought {qty} {row['Symbol']}")
+                        st.rerun()
+                    else:
+                        st.error(msg)
+                        
+            with pt_col3:
+                # Check if owned
+                owned = pt.portfolio[pt.portfolio['Symbol'] == row['Symbol'].replace('.NS', '')]
+                owned_qty = 0 if owned.empty else owned.iloc[0]['Quantity']
+                
+                if owned_qty > 0:
+                    st.write(f"**Owned:** {owned_qty}")
+                    if st.button(f"Sell @ ₹{row['Current Price']:.2f}", key=f"sell_{row['Symbol']}"):
+                        success, msg = pt.sell_stock(row['Symbol'], qty, row['Current Price'])
+                        if success:
+                            st.success(f"Sold {qty} {row['Symbol']}")
+                            st.rerun()
+                        else:
+                            st.error(msg)
+                else:
+                    st.caption("You don't own this stock")
+
             det_col1, det_col2 = st.columns(2)
             
             with det_col1:

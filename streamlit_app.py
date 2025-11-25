@@ -33,46 +33,12 @@ st.set_page_config(
 )
 
 # Custom CSS for mobile-friendly design
-st.markdown("""
-    <style>
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 20px;
-        border-radius: 10px;
-        color: white;
-        margin: 10px 0;
-    }
-    .signal-buy {
-        background-color: #28a745;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
-    .signal-sell {
-        background-color: #dc3545;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
-    .signal-neutral {
-        background-color: #ffc107;
-        color: black;
-        padding: 10px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
-    .price-up {
-        color: #28a745;
-        font-weight: bold;
-    }
-    .price-down {
-        color: #dc3545;
-        font-weight: bold;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# Load custom CSS
+def load_css():
+    with open("assets/style.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css()
 
 # ============================================================================
 # NIFTY 50 SYMBOLS
@@ -263,7 +229,9 @@ def create_chart(df, symbol, target_price):
     fig.update_layout(
         height=500,
         xaxis_rangeslider_visible=False,
-        template="plotly_white",
+        template="plotly_dark",
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=10, r=10, t=30, b=10)
     )
     return fig
@@ -419,23 +387,26 @@ def main():
         st.sidebar.success("Cache cleared — fetching fresh data now.")
 
     # Fetch and predict
-    st.info("📡 Fetching live market data for all NIFTY 50 stocks...")
-    # pass session_state refresh key so cache is bypassed when user requested refresh
-    data = fetch_all_data(NIFTY_50, refresh_key=st.session_state.get('refresh_data_ts'))
-    
-    if not data:
-        st.error("Failed to fetch data. Please check your internet connection.")
-        return
-    
-    st.success(f"✓ Fetched data for {len(data)} stocks")
-    st.info("🤖 Generating predictions using individual stock models...")
-    predictions_df = generate_predictions(data)
-    
-    if predictions_df.empty:
-        st.error("No predictions generated. Please try again.")
-        return
-    
-    st.success(f"✓ Generated predictions for {len(predictions_df)} stocks")
+    with st.status("🔄 Analyzing Market Data...", expanded=True) as status:
+        st.write("📡 Fetching live prices...")
+        # pass session_state refresh key so cache is bypassed when user requested refresh
+        data = fetch_all_data(NIFTY_50, refresh_key=st.session_state.get('refresh_data_ts'))
+        
+        if not data:
+            status.update(label="❌ Data Fetch Failed", state="error")
+            st.error("Failed to fetch data. Please check your internet connection.")
+            return
+        
+        st.write(f"✓ Fetched {len(data)} stocks")
+        st.write("🤖 Running prediction models...")
+        predictions_df = generate_predictions(data)
+        
+        if predictions_df.empty:
+            status.update(label="❌ Prediction Failed", state="error")
+            st.error("No predictions generated. Please try again.")
+            return
+        
+        status.update(label="✅ Analysis Complete", state="complete", expanded=False)
     
     # Filter predictions
     predictions_df = predictions_df[predictions_df['Signal'].isin(filter_signal)]
@@ -468,96 +439,96 @@ def main():
     # Display predictions table
     st.markdown("### 📋 Stock Predictions")
     
-    # Create interactive display
+    # Headers for the list
+    h1, h2, h3, h4, h5, h6 = st.columns([1.5, 1, 1, 1, 2, 0.5])
+    h1.markdown("**Stock**")
+    h2.markdown("**Price**")
+    h3.markdown("**Signal**")
+    h4.markdown("**Return**")
+    h5.markdown("**Trade**")
+    h6.markdown("**Info**")
+    
+    st.markdown("---")
+
+    # List Layout
     for idx, row in predictions_df.iterrows():
-        signal_class = f"signal-{row['Signal'].lower()}"
+        c1, c2, c3, c4, c5, c6 = st.columns([1.5, 1, 1, 1, 2, 0.5])
         
-        col1, col2, col3 = st.columns([1, 2, 1])
-        
-        with col1:
-            st.markdown(f"<div class='{signal_class}'>{row['Emoji']} {row['Signal']}</div>", 
-                       unsafe_allow_html=True)
-        
-        with col2:
+        # 1. Symbol
+        with c1:
             st.markdown(f"**{row['Symbol']}**")
-            st.caption(f"Price: ₹{row['Current Price']:.2f}")
-        
-        with col3:
-            if row['Return %'] > 0:
-                st.markdown(f"<div class='price-up'>+{row['Return %']:.2f}%</div>", 
-                           unsafe_allow_html=True)
-            else:
-                st.markdown(f"<div class='price-down'>{row['Return %']:.2f}%</div>", 
-                           unsafe_allow_html=True)
-        
-        # Expandable details
-        with st.expander(f"📊 Details for {row['Symbol']}"):
-            # Interactive Chart
-            chart_df = data.get(row['Symbol'] + '.NS')
-            if chart_df is not None:
-                fig = create_chart(chart_df, row['Symbol'], row['Target Price'])
-                st.plotly_chart(fig, use_container_width=True)
+            st.caption(f"Vol Z: {row['Volume Z']:.1f}")
             
-            # Paper Trading Controls
-            st.markdown("#### 💸 Trade")
-            pt_col1, pt_col2, pt_col3 = st.columns([1, 1, 2])
+        # 2. Price
+        with c2:
+            st.write(f"₹{row['Current Price']:.2f}")
             
-            with pt_col1:
-                qty = st.number_input("Qty", min_value=1, value=10, key=f"qty_{row['Symbol']}")
+        # 3. Signal
+        with c3:
+            signal_color = "green" if row['Signal'] == "BUY" else "red" if row['Signal'] == "SELL" else "gray"
+            st.markdown(f":{signal_color}[{row['Signal']}]")
             
-            with pt_col2:
-                if st.button(f"Buy @ ₹{row['Current Price']:.2f}", key=f"buy_{row['Symbol']}"):
+        # 4. Return
+        with c4:
+            color = "green" if row['Return %'] > 0 else "red"
+            st.markdown(f":{color}[{row['Return %']:+.2f}%]")
+            
+        # 5. Trade Controls (Inline)
+        with c5:
+            tc1, tc2, tc3 = st.columns([1, 1, 1])
+            with tc1:
+                qty = st.number_input("Qty", min_value=1, value=10, key=f"qty_{row['Symbol']}", label_visibility="collapsed")
+            with tc2:
+                if st.button("Buy", key=f"buy_{row['Symbol']}", type="primary" if row['Signal'] == "BUY" else "secondary", use_container_width=True):
                     success, msg = pt.buy_stock(row['Symbol'], qty, row['Current Price'])
                     if success:
-                        st.success(f"Bought {qty} {row['Symbol']}")
+                        st.toast(f"✅ Bought {qty} {row['Symbol']}")
                         st.rerun()
                     else:
                         st.error(msg)
-                        
-            with pt_col3:
-                # Check if owned
+            with tc3:
+                # Check ownership
                 owned = pt.portfolio[pt.portfolio['Symbol'] == row['Symbol'].replace('.NS', '')]
                 owned_qty = 0 if owned.empty else owned.iloc[0]['Quantity']
                 
                 if owned_qty > 0:
-                    st.write(f"**Owned:** {owned_qty}")
-                    if st.button(f"Sell @ ₹{row['Current Price']:.2f}", key=f"sell_{row['Symbol']}"):
+                    if st.button("Sell", key=f"sell_{row['Symbol']}", type="primary" if row['Signal'] == "SELL" else "secondary", use_container_width=True):
                         success, msg = pt.sell_stock(row['Symbol'], qty, row['Current Price'])
                         if success:
-                            st.success(f"Sold {qty} {row['Symbol']}")
+                            st.toast(f"✅ Sold {qty} {row['Symbol']}")
                             st.rerun()
                         else:
                             st.error(msg)
-                else:
-                    st.caption("You don't own this stock")
-
-            det_col1, det_col2 = st.columns(2)
-            
-            with det_col1:
-                st.write(f"**Current Price:** ₹{row['Current Price']:.2f}")
-                st.write(f"**Target Price (5D):** ₹{row['Target Price']:.2f}")
-                st.write(f"**Price Move:** ₹{row['Price Move']:.2f}")
-                st.write(f"**5-Day Return:** {row['Return %']:.2f}%")
-            
-            with det_col2:
-                st.write(f"**RSI (14):** {row['RSI']:.2f}")
-                st.write(f"**MA Trend (5/20):** {row['MA Trend']}")
-                st.write(f"**Volume Z-Score:** {row['Volume Z']:.2f}")
-                st.write(f"**Last Updated:** {row['Date'].strftime('%Y-%m-%d %H:%M')}")
-            
-            if show_details:
-                st.info("""
-                **Feature Explanation:**
-                - **5-Day Return**: Predicted return over next 5 trading days (not 1 day!)
-                - **RSI**: Relative Strength Index (0-100, <30 oversold, >70 overbought)
-                - **MA Trend**: Moving Average 5-day vs 20-day (Up/Down)
-                - **Volume Z-Score**: Volume relative to 20-day average
+        
+        # 6. Details Expander
+        with c6:
+            with st.popover("📊"):
+                st.markdown(f"### {row['Symbol']} Analysis")
+                # Interactive Chart
+                chart_df = data.get(row['Symbol'] + '.NS')
+                if chart_df is not None:
+                    fig = create_chart(chart_df, row['Symbol'], row['Target Price'])
+                    st.plotly_chart(fig, use_container_width=True)
                 
-                **Signal Thresholds:**
-                - **BUY**: Predicted return > +2.0% (5-day)
-                - **SELL**: Predicted return < -2.0% (5-day)
-                - **NEUTRAL**: Return between -2.0% to +2.0%
-                """)
+                st.write(f"**Target:** ₹{row['Target Price']:.2f}")
+                st.write(f"**RSI:** {row['RSI']:.2f}")
+                st.write(f"**MA Trend:** {row['MA Trend']}")
+        
+        st.markdown("<hr style='margin: 5px 0; opacity: 0.1;'>", unsafe_allow_html=True)
+            
+    if show_details:
+        st.info("""
+        **Feature Explanation:**
+        - **5-Day Return**: Predicted return over next 5 trading days (not 1 day!)
+        - **RSI**: Relative Strength Index (0-100, <30 oversold, >70 overbought)
+        - **MA Trend**: Moving Average 5-day vs 20-day (Up/Down)
+        - **Volume Z-Score**: Volume relative to 20-day average
+        
+        **Signal Thresholds:**
+        - **BUY**: Predicted return > +2.0% (5-day)
+        - **SELL**: Predicted return < -2.0% (5-day)
+        - **NEUTRAL**: Return between -2.0% to +2.0%
+        """)
     
     # Download results
     st.markdown("---")

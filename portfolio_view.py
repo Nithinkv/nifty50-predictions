@@ -4,15 +4,10 @@ import pandas as pd
 def show_portfolio(pt, fetch_data_func):
     st.header("💰 My Portfolio")
     
-    col1, col2, col3, col4 = st.columns(4)
-    col4.metric("Cash Balance", f"₹{pt.balance:,.2f}")
-
     # Calculate Portfolio Value
     if pt.portfolio.empty:
         st.info("Your portfolio is empty. Go to the Dashboard to buy stocks!")
-        col1.metric("Total Invested", "₹0.00")
-        col2.metric("Current Value", "₹0.00")
-        col3.metric("Total P&L", "₹0.00")
+        st.metric("Cash Balance", f"₹{pt.balance:,.2f}")
     else:
         # Fetch current prices for owned stocks
         symbols = [s + ".NS" for s in pt.portfolio['Symbol'].unique()]
@@ -42,19 +37,46 @@ def show_portfolio(pt, fetch_data_func):
             total_pl = current_value - total_invested
             total_pl_pct = (total_pl / total_invested * 100) if total_invested > 0 else 0
             
-            col1.metric("Total Invested", f"₹{total_invested:,.2f}")
-            col2.metric("Current Value", f"₹{current_value:,.2f}")
-            col3.metric("Total P&L", f"₹{total_pl:,.2f}", delta=f"{total_pl_pct:.2f}%")
-            
-            st.subheader("Holdings")
-            st.dataframe(portfolio_df.style.format({
-                "AvgPrice": "₹{:.2f}",
-                "Current Price": "₹{:.2f}",
-                "Value": "₹{:.2f}",
-                "Invested": "₹{:.2f}",
-                "P&L": "₹{:.2f}",
-                "P&L %": "{:.2f}%"
-            }))
+    # Summary Metrics in a Row
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Total Invested", f"₹{total_invested:,.2f}")
+    m2.metric("Current Value", f"₹{current_value:,.2f}")
+    m3.metric("Total P&L", f"₹{total_pl:,.2f}", delta=f"{total_pl_pct:.2f}%")
+    m4.metric("Cash Balance", f"₹{pt.balance:,.2f}")
+
+    st.markdown("### 📊 Holdings")
+    
+    # Headers
+    h1, h2, h3, h4, h5, h6 = st.columns([1.5, 1, 1, 1, 1, 1])
+    h1.markdown("**Stock**")
+    h2.markdown("**Qty**")
+    h3.markdown("**Avg Price**")
+    h4.markdown("**Current**")
+    h5.markdown("**P&L**")
+    h6.markdown("**Action**")
+    st.markdown("---")
+
+    for idx, row in portfolio_df.iterrows():
+        c1, c2, c3, c4, c5, c6 = st.columns([1.5, 1, 1, 1, 1, 1])
+        
+        with c1: st.markdown(f"**{row['Symbol']}**")
+        with c2: st.write(f"{row['Quantity']}")
+        with c3: st.write(f"₹{row['AvgPrice']:.2f}")
+        with c4: st.write(f"₹{row['Current Price']:.2f}")
+        with c5: 
+            color = "green" if row['P&L'] >= 0 else "red"
+            st.markdown(f":{color}[{row['P&L']:+.2f} ({row['P&L %']:.2f}%)]")
+        
+        with c6:
+            if st.button("Sell", key=f"port_sell_{row['Symbol']}", type="secondary", use_container_width=True):
+                success, msg = pt.sell_stock(row['Symbol'] + ".NS", row['Quantity'], row['Current Price'])
+                if success:
+                    st.toast(f"✅ Sold all {row['Quantity']} {row['Symbol']}")
+                    st.rerun()
+                else:
+                    st.error(msg)
+        
+        st.markdown("<hr style='margin: 5px 0; opacity: 0.1;'>", unsafe_allow_html=True)
         
     st.markdown("---")
     st.subheader("📜 Transaction History")

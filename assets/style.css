@@ -1,0 +1,95 @@
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s;
+    }
+
+    .stock-card:hover {
+        border-color: #58A6FF;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Signal Badges */
+    .signal-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .signal-buy {
+        background: rgba(35, 134, 54, 0.2);
+        color: #3FB950;
+        border: 1px solid rgba(35, 134, 54, 0.4);
+    }
+
+    .signal-sell {
+        background: rgba(218, 54, 51, 0.2);
+        color: #F85149;
+        border: 1px solid rgba(218, 54, 51, 0.4);
+    }
+
+    .signal-neutral {
+        background: rgba(110, 118, 129, 0.2);
+        color: #8B949E;
+        border: 1px solid rgba(110, 118, 129, 0.4);
+    }
+
+    /* Price Text */
+    .price-up {
+        color: #3FB950;
+        font-weight: 600;
+    }
+
+    .price-down {
+        color: #F85149;
+        font-weight: 600;
+    }
+
+    /* Buttons */
+    .stButton>button {
+        background: linear-gradient(180deg, #238636 0%, #2EA043 100%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .stButton>button:hover {
+        filter: brightness(1.1);
+        box-shadow: 0 0 10px rgba(46, 160, 67, 0.4);
+    }
+
+    /* Secondary Button (Sell/Reset) */
+    div[data-testid="stHorizontalBlock"] .stButton>button {
+        background: #21262D;
+        border: 1px solid #30363D;
+    }
+
+    /* Headers */
+    h1,
+    h2,
+    h3 {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #0E1117;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #30363D;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #58A6FF;
+    }

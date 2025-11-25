@@ -1,0 +1,643 @@
+Journal of Information Systems Engineering and Management 
+2025, 10(26s) 
+e-ISSN: 2468-4376 
+ 
+https://www.jisem-journal.com/ Research Article  
+ 
+Copyright © 2024 by Author/s and Licensed by JISEM. This is an open access article distributed under the Creative Commons Attribution License which 
+permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited. 
+Machine Learning-Based Automated Trading Strategies for 
+the Indian Stock Market 
+ 
+Rajesh Dey, Salina Kassim, Rupali Atul Mahajan, Janardan A. Pawar, Dr. Vijaya Kumbhar, Jyoti Shendage, 
+Manisha Patil 
+Postdoctoral Researcher Institute of Islamic Banking and Finance IIUM 
+Associate professor, Gopal Narayan Singh University, GNSU, Bihar, India 
+rajesh.dey@gnsu.ac.in 
+IIUM Institute of Islamic Banking and Finance, International Islamic University, 53100, Selangor Malaysia ksalina@iium.edu.my 
+Associate Professor & Head, Department of CSE (Data Science), Vishwakarma Institute of Technology, Pune, Maharashtra, India. 
+rupali.mahajan@viit.ac.in 
+Principal, Indira College of Commerce and Science, Pune, Maharashtra, India. janardanp@iccs.ac.in  
+School of Computer Studies, Sri Balaji University, Pune, Maharashtra, India. veejeya.kumbhar@gmail.com 
+School of Computer Studies, Sri Balaji University, Pune, Maharashtra, India. jyoti.shendage@sbup.edu.in 
+Assistant Professor, Indira College of Commerce and Science, Pune, Maharashtra, India. manisha.patil@iccs.ac.in  
+ 
+ARTICLE INFO ABSTRACT 
+Received: 28 Dec 2024 
+Revised: 15 Feb 2025 
+Accepted: 22 Feb 2025 
+The Indian stock market is highly volatile and influenced by various macroeconomic factors, 
+making it challenging for traders to consistently achieve profitable trades using traditional 
+methods. Machine learning (ML) -based automated trading systems offer a n intelligent, data -
+driven approach to analyzing historical market trends, detecting patterns, and executing trades 
+with minimal human intervention. This study explores the application of ML techniques in 
+developing automated trading strategies tailored fo r the Indian stock market. The research 
+focuses on supervised learning methods, such as Random Forest and Long Short-Term Memory 
+(LSTM) networks, for stock price prediction and trend classification. Additionally, reinforcement 
+learning models, including De ep Q-Networks (DQN) and Proximal Policy Optimization (PPO), 
+are employed to develop adaptive trading strategies that maximize returns while minimizing 
+risks. Historical stock price data from the National Stock Exchange (NSE), combined with 
+technical indicators and sentiment analysis from financial news, are used for model training and 
+evaluation. Back testing results on select Indian stocks (e.g., Reliance, TCS, HDFC Bank) reveal 
+that ML -based trading strategies significantly outperform conventional technic al analysis 
+methods. LSTM -based models achieved 15% higher returns compared to traditional moving 
+average crossovers, while DQN-based reinforcement learning strategies demonstrated superior 
+risk management capabilities. This study highlights the potential of ML -driven automated 
+trading systems in improving profitability, decision-making, and risk management in the Indian 
+stock market. However, challenges such as data quality, computational complexity, and 
+regulatory constraints remain key areas for further exploration. Future research will focus on 
+integrating real -time sentiment analysis and optimizing high -frequency trading models for 
+enhanced market performance. 
+Keywords: Machine Learning, Automated Trading, Indian Stock Market, Algorithmic Trading, 
+Stock Price Prediction, Risk Management, Market Volatility, Sharpe Ratio. 
+ 
+I.INTRODUCTION 
+The The Indian stock marketplace has emerged as one of the maximum dynamic and hastily evolving economic 
+ecosystems inside the world. With millions of retail and institutional buyers collaborating daily, the marketplace 
+reveals considerable fluctuations driven by financial guidelines, corporate income, international marketplace traits, 
+and investor sentiment. traditional trading strategies, which include essential and technical evaluation, have long 
+been used to navigate the complexities of inventory price moves [1]. but, those techniques often fall short in capturing 
+the problematic styles hidden in large datasets and fail to conform to surprising market changes. As a end result, 
+783  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+algorithmic trading and device mastering (ML)-primarily based automatic buying and selling strategies have gained 
+prominence, offering traders with superior equipment to optimize investment choices. device learning, a subset of 
+artificial intelligence (AI) , permits computers to research from historical facts, pick out developments, and make 
+predictive choices with out specific programming. within the monetary area, ML models can analyze good sized 
+amounts of stock marketplace facts, detect hidden correlatio ns, and increase buying and selling techniques that 
+reduce risks and maximize returns [2]. The growing availability of high -frequency buying and selling records, 
+computational energy, and sophisticated ML algorithms has revolutionized how buying and sellin g strategies are 
+advanced and finished. large monetary establishments, hedge funds, and proprietary trading companies have already 
+adopted ML -based strategies to enhance their market overall performance. but, the implementation of such 
+technology in the Indian inventory marketplace, especially for retail and mid-level institutional traders, continues to 
+be in its nascent stage. The Indian inventory market presents particular demanding situations that require specialized 
+ML solutions [3]. in contrast to developed markets such as america and Europe, India’s stock market is characterised 
+by better volatility, decrease liquidity in sure stocks, and the influence of domestic monetary rules. moreover, 
+regulatory constraints imposed through the Securities and trade  Board of India (SEBI) limit the volume to which 
+excessive-frequency trading can be deployed. moreover, the provision of high -quality statistics remains a problem, 
+as economic records in India is often fragmented throughout specific resources. in spite of these challenges, ML -
+primarily based computerized trading has the capacity to convert how traders method stock buying and selling in 
+India through providing statistics -pushed, adaptive, and efficient techniques. This research objectives to discover 
+how ML-based automated trading techniques can be successfully carried out inside the Indian stock market [4]. in 
+particular, the take a look at focuses on primary categories of ML models: supervised gaining knowledge of and 
+reinforcement mastering. Supervised studying techniques, which include decision timber, aid vector machines, and 
+deep mastering models like long short -time period memory (LSTM) networks, are extensively used for predicting 
+stock price actions primarily based on ancient data and technical indica tors. Reinforcement getting to know, 
+alternatively, offers an progressive technique in which trading agents learn choicest buying and selling movements 
+through trial and mistakes, adapting to actual -time market situations [5]. This paper examines the effec tiveness of 
+each process in generating profitable buying and selling strategies while mitigating dangers. The methodology 
+followed in this studies entails accumulating ancient inventory records from the national inventory exchange (NSE), 
+preprocessing it the usage of characteristic engineering strategies, and education ML models to discover profitable 
+trading possibilities. The models are then examined and established using lower back testing strategies to evaluate 
+their performance in real -global trading e ventualities [6]. This take a look at compares ML -based techniques with 
+traditional technical analysis strategies, which includes shifting averages and momentum indicators, to evaluate their 
+relative effectiveness.  The findings from this have a look at pr ovide valuable insights into how machine mastering 
+can enhance trading techniques inside the Indian inventory market. with the aid of leveraging ML techniques, 
+investors can enhance decision-making, lessen emotional bias, and execute trades with better precision. however, the 
+adoption of such techniques calls for overcoming several hurdles, together with data first -class problems, 
+computational barriers, and regulatory compliance [7]. destiny advancements in deep mastering, real-time sentiment 
+analysis, and quantum computing may further refine ML -based totally trading models, making them even greater 
+powerful in capturing marketplace dynamics. the combination of device mastering into automated trading offers a 
+promising street for achieving better returns an d minimizing risks in the Indian stock marketplace. As generation 
+keeps to evolve, the role of AI -driven trading strategies is expected to grow, main to a extra facts -centric and green 
+financial ecosystem. This study contributes to the ongoing development of clever trading structures and provides a 
+foundation for further exploration into the capability of AI in monetary markets. 
+II.AN OVERVIEW OF THE LITERATURE 
+The field of algorithmic trading has witnessed significant advancements via the integration of deep reinforcement 
+mastering (DRL) techniques. Researchers have evolved frameworks that optimize the stability between risk and 
+reward, which includes mean-Variance-based DRL models and Proximal policy Optimization (PPO) algorithms for 
+pairs buying and selling. simpler reinforcement studying methods have also been introduced to enhance selection -
+making in risky economic environments [8]. additionally, deep masteri ng networks had been leveraged to optimize 
+established mutual fund buying and selling strategies, adapt to market situations dynamically, and enhance selection-
+making accuracy. function fusion strategies have similarly improved DRL models by using integrat ing multiple 
+marketplace indicators. massive information analytics performs a vital function in stock market prediction by 
+enhancing stock analysis and forecasting thru massive -scale facts processing [9]. device getting to know models 
+784  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+incorporating sentiment analysis and political scenario analysis have also confirmed effective in predicting inventory 
+market traits. Deep gaining knowledge of techniques had been utilized to identify economic market trend reversals, 
+demonstrating their energy in analyzing marketplace conduct. numerous technical signs, including Bollinger Bands 
+and lengthy quick-term. 
+Table 1. Summarizes the Literature Review of Various Authors 
+Area Methodology Key Findings Challenges Pros Cons 
+Algorithmic 
+Trading 
+Mean-Variance-
+based DRL, PPO 
+algorithms 
+Optimized risk-
+reward balance 
+for practical 
+trading 
+Computational 
+complexity and 
+training time 
+Improved 
+decision-
+making and 
+efficiency 
+High data 
+dependency 
+Stock Trading 
+Strategies 
+Deep 
+reinforcement 
+learning (DRL) 
+models 
+Adaptive 
+trading 
+strategies with 
+enhanced 
+decision 
+accuracy 
+Requires large 
+datasets and tuning 
+of hyperparameters 
+Better market 
+prediction and 
+adaptability 
+Difficult to 
+interpret 
+decisions 
+Big Data 
+Analytics 
+Machine 
+learning models, 
+sentiment and 
+political analysis 
+Improved 
+market trend 
+prediction 
+using external 
+factors 
+Data noise and 
+uncertainty 
+Utilizes vast 
+data sources for 
+predictions 
+Prone to 
+misinformation 
+and biases 
+Market Trend 
+Analysis 
+Deep learning 
+for trend 
+reversals 
+Enhanced 
+market 
+behavior 
+analysis 
+Requires high 
+computational 
+power 
+More precise 
+insights into 
+market trends 
+Potential false 
+positives in 
+predictions 
+Technical 
+Indicators 
+Bollinger Bands, 
+LSTM models 
+Evaluated 
+effectiveness of 
+traditional and 
+AI-driven 
+methods 
+May not generalize 
+across different 
+markets 
+Combination of 
+historical and 
+real-time 
+analysis 
+Overfitting to 
+historical data 
+Financial 
+Security 
+Deep learning 
+for cybercrime 
+detection 
+Effective in 
+identifying 
+fraudulent 
+activities 
+Evolving nature of 
+financial fraud 
+Strengthens 
+security 
+measures in 
+financial 
+systems 
+Continuous 
+updates required 
+to keep models 
+effective 
+ 
+Memory (LSTM) models, had been evaluated for his or her effectiveness in trading techniques, while momentum -
+based totally strategies have contributed to a higher perception of marketplace dynamics [10]. past buying and selling 
+strategies, deep studying has  played a giant role in economic protection, specifically in detecting and preventing 
+financial cybercrime. furthermore, AI packages have prolonged beyond the financial area, being utilized in scientific 
+diagnostics, wildlife activity detection, and automa ted object detection in media content material [11]. the 
+combination of DRL in decision support systems has further more desirable the automation of inventory market 
+trading. ordinary, the literature displays a growing consensus at the effectiveness of DRL  and big data analytics in 
+optimizing trading techniques, improving market predictions, and mitigating economic risks. destiny research must 
+attention on refining those models, enhancing real -time adaptability, and addressing demanding situations 
+associated with interpretability and regulatory compliance in AI-pushed buying and selling structures [12]. inside the 
+Indian marketplace, where liquidity fragmentation and sudden policy modifications are common, interpretability 
+will become quintessential to keep away from deploying black-box models that could bring about unexpected losses. 
+The submit-integration section entails rigorous Backtesting and simulation. Backtesting frameworks that replicate 
+ancient market situations using tick -degree or minute -degree da ta allow investors to assess the profitability and 
+robustness of the included ML approach. In India, backtesting is in addition complex via issues like transaction 
+785  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+prices, slippages, liquidity constraints, and market effect, specifically for mid -cap and small -cap stocks. advanced 
+backtesting engines now simulate realistic execution scenarios that thing in these marketplace microstructure 
+elements, imparting extra cor rect overall performance estimations before a method goes live.  The information 
+affords a structured overview of numerous AI -driven methodologies applied in algorithmic trading, inventory 
+marketplace analysis, and other domain names as illustrated in the above table 1.  at the same time as those 
+techniques improve decision-making, beautify marketplace predictions, and automate buying and selling structures, 
+in addition they face issues like computational complexity, records dependency, and regulatory worries. 
+III.MACHINE LEARNING BASED TRADING STRATEGIES 
+The development of trading techniques using system gaining knowledge of (ML) within the Indian stock market calls 
+for a systematic method that mixes financial concept with superior facts-pushed modeling. The core idea is to leverage 
+system gaining knowledge of algorithms to pick out worthwhile patterns or anomalies within ancient and real -time 
+statistics and convert them into actionable buying and selling indicators. The most generally hired strategies include 
+momentum, mean reversion, statistical arbitrage, and more superior techniques like reinforcement gaining 
+knowledge of-based totally models. 
+A. Momentum Trading Strategies 
+Momentum trading techniques are based totally on the principle that securities which have completed nicely within 
+the past generally tend to preserve acting nicely in the near term, and people which have underperformed are possibly 
+to continue declining. in the Indian marketplace, momentum-based totally techniques are widely used, especially for 
+distinctly liquid stocks indexed on indices just like the NIFTY 50 and Sensex. those strategies rely on ML models to 
+locate developments through studying technical signs inclusive of transferring Averages (MA), Relative power Index 
+(RSI), and moving average Convergence Divergence (MACD). 
+ 
+Figure 1. Types of Trading Strategies & ML Models used in Strategy Analysis 
+A machine mastering classifier like a Random wooded area or Gradient Boosting machine may be educated on 
+historical fee records in conjunction with these technical signs as functions to expect the chance of an upward or 
+downward fashion over a targeted tim e horizon. The version learns from labeled facts (e.g., whether beyond trades 
+ended in nice or poor returns) and helps automate purchase/promote decisions as shown within the above determine 
+1. Momentum models, when implemented to Indian equities, should reflect on consideration on marketplace-precise 
+elements like intraday volatility, liquidity profiles, and they have an effect on of foreign Institutional investors (FIIs), 
+whose buying and selling patterns considerably impact charge momentum. 
+B. Mean Reversion Strategies 
+Suggest reversion techniques are based at the concept that asset costs tend to revert to their historic mean or common 
+value over time. in the Indian marketplace, in which shares are frequently challenge to transient mispricings owing 
+to information activi ties, macroeconomic modifications, or regulatory bulletins, suggest reversion models may be 
+
+786  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+incredibly powerful. device studying enhances imply reversion strategies through identifying the energy and 
+likelihood of reversion factors with extra precision. 
+For instance, statistical indicators such as Bollinger Bands or Z-ratings are frequently used to sign when a inventory 
+charge deviates drastically from its imply. ML algorithms like support Vector Machines (SVM) or ok -Nearest 
+associates (KNN) may be skille d to categories these deviations as both genuine anomalies (which might be in all 
+likelihood to revert) or as part of a bigger trend (momentum). in the Indian market context, the success of imply 
+reversion models can depend on right function selection, whi ch include zone -primarily based imply reversion 
+dispositions, news sentiment evaluation (e.g., detecting market overreactions), and accounting for corporate moves 
+like dividends or bonus problems. 
+C. Statistical Arbitrage Strategies 
+Statistical arbitrage (StatArb) strategies contain exploiting temporary mispricings among correlated securities to 
+generate danger -adjusted returns. In India, pairs trading —a common form of statistical arbitrage —is famous 
+amongst quantitative investors, in which two historically correlated stocks (e.g., from the equal region) are monitored 
+for deviations from their standard rate courting. device getting to know models, in particular unsupervised gaining 
+knowledge of strategies like clustering (okay -skill or DBSCAN), can be used to identify stock pairs or baskets with 
+solid ancient correlations. 
+Once the pairs are identified, mean -reverting models or Kalman Filters included with reinforcement 
+mastering techniques can be used to dynamically adjust hedge ratios and optimize access and exit points. as an 
+instance, if the historical spread among two s tocks like Infosys and TCS widens past a device -found out threshold, 
+the set of rules ought to short the outperforming inventory and long the underperforming one, anticipating 
+convergence. In India, StatArb models must think about elements like quarter rot ations, income seasons, and 
+regulatory policy shifts, which can briefly distort statistical relationships. 
+D. Augmented Execution Models 
+past traditional techniques, ML plays a fundamental position in improving change execution. Reinforcement 
+studying (RL) models like Deep Q -gaining knowledge of Networks (DQN) and Proximal policy Optimization (PPO) 
+are used to decide gold standard change si zes and timing to decrease marketplace effect and slippage, in particular 
+important in the Indian context, in which certain mid- and small-cap shares be afflicted by decrease liquidity. these 
+models constantly research via simulating interactions with marketplace environments and adapt to dynamic order 
+e book adjustments. 
+Sentiment-driven models powered by natural Language Processing (NLP) have won traction. For Indian markets, 
+wherein information waft related to authorities coverage adjustments (e.g., finances announcements, interest fee 
+decisions through RBI) can drastica lly impact inventory expenses, combining sentiment signs derived from 
+information articles or social media statistics with technical signals creates hybrid techniques that outperform 
+traditional models. 
+E. Hybrid Strategies and Ensemble Learning 
+A developing fashion amongst quantitative traders is the use of hybrid fashions that combine multiple strategies. for 
+instance, a version may additionally follow momentum good judgment to fashion-following stocks even as the use of 
+suggest reversion techniques on variety-certain belongings. Ensemble mastering strategies, which include stacking 
+or blending a couple of devices studying algorithms, were found to enhance predictive accuracy and decrease the 
+threat of overfitting to specific marketplace situations.  
+IV.INTEGRATION OF ML MODELS INTO TRADING STRATEGIES 
+The integration of device learning (ML) models into trading techniques represents a paradigm shift in how 
+marketplace participants, especially within the Indian inventory marketplace, become aware of and act upon buying 
+and selling possibilities. traditionally, buying and selling strategies had been based totally on deterministic rule-based 
+totally systems or technical signs like shifting averages and support -resistance levels. but, with the upward push of 
+system learning, these strategies have developed in to wise, adaptive systems capable of getting to know from full -
+size, complex datasets and adjusting to dynamic market conditions. Integrating ML models into trading workflows 
+entails multiple stages, starting with data acquisition and preprocessing, followed by version selection and training, 
+787  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+and sooner or later, deploying the version for actual-time signal era and change execution. inside the Indian inventory  
+market, data heterogeneity poses a unique project and possibility for ML-driven techniques. traders generally contain 
+established data together with historic rate moves, technical indicators, and fundamental ratios alongside 
+unstructured data like financial information, company announcements, and social media sentiment. the mixing 
+system starts with characteristic engineering, in which ra w facts is transformed into meaningful inputs for ML 
+models. for example, traders frequently use volatility metrics, momentum oscillators, and volume -based indicators 
+as functions, at the same time as applying natural language processing (NLP) fashions to sentiment information from 
+home financial news portals. This step is essential inside the Indian context, wherein surprising regulatory bulletins 
+from SEBI or RBI coverage decisions often reason sharp marketplace movements, and the inclusion of opportunity  
+facts can beautify version robustness. 
+ 
+Figure 2. Depict the End-To-End ML-Based Automated Trading System Architecture 
+Once the functions are engineered, the subsequent step includes deciding on appropriate ML algorithms tailor-made 
+to the unique trading objective. For trend -following techniques, classification models inclusive of aid Vector 
+Machines (SVM) or Random Forests are usu ally used to expect directional price movements over short -to-medium 
+time horizons. those models are trained on classified datasets, in which past price data is annotated with buy, sell, or 
+hold indicators based on predefined return thresholds. In contrast , regression models like Gradient Boosting 
+Regressors or deep gaining knowledge of -based long quick -time period reminiscence (LSTM) networks are hired 
+while the purpose is to are expecting continuous variables along with future returns, volatility forecasts, or fee goals. 
+in the Indian fairness marketplace, where liquidity and volatility range throughout huge-cap, mid-cap, and small-cap 
+stocks, ML models may be exceptional -tuned on a sectoral or inventory -particular basis, improving precision and 
+reducing overfitting as depicted in figure 2. Integrating ML models into live trading environments calls for seamless 
+verbal exchange among the predictive version and the execution layer. For retail and institutional buyers in India, 
+agents like Zerodha, Upstox, and Interactive brokers offer APIs that permit computerized execution of orders based 
+totally on actual-time model outputs. This step normally entails setting up a pipeline wherein the skilled model runs 
+on a predefined agenda or in actual -time, constantly mo nitoring stay market facts streams. as soon as a model 
+identifies a alternate signal—whether or not it’s a purchase, sell, or brief advice —it could robotically place an order 
+thru the broking API, adjusting parameters along with position length and forestall-loss levels based on the model’s 
+self-assurance score or the anticipated volatility of the stock. This integration creates a feedback loop, wherein trade 
+outcomes are fed returned into the model education pipeline to facilitate non-stop learning and method refinement. 
+threat management is an critical aspect whilst embedding ML models into trading strategies, in particular inside the 
+regulatory surroundings of the Indian marketplace. SEBI’s suggestions on algorithmic trading mandate the 
+implementation of pre-change threat controls, such as order quantity limits, price variety exams, and forestall -loss 
+mechanisms. device studying models are frequently mixed with those rule -based totally danger filters to make sure 
+compliance and limit downside risks. as an example, reinforcement studying (RL) models can be programmed to 
+regulate role sizing dynamically based at the winning marketplace volatility or other risk metrics like fee -at-danger 
+
+788  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+(VaR), offering a more state -of-the-art chance -adjusted method to computerized trading. Integration is model 
+interpretability and explainability. With developing scrutiny from regulators and inner compliance teams, especially 
+in excessive-frequency buying and selling (HFT) environments, it's miles critical for traders to apprehend and justify 
+the intent in the back of ML-generated signals. Explainable AI (XAI) techniques including SHAP (SHapley Additive 
+motives) and LIME (nearby Interpretable version -agnostic factors) are actually typically included into trading 
+systems to provide insights into which capabilities (e.g., RSI values, quantity surges, sentiment scores) inspired the 
+version’s predictions. the combination of ML models into buying and selling stra tegies within the Indian context 
+additionally opens doorways to hybrid processes where models function in tandem with discretionary trading 
+insights. Many institutional desks in India integrate quantitative indicators generated with the aid of ML algorithms 
+with human trader oversight, especially during durations of macroeconomic uncertainty or regulatory flux. This 
+hybrid setup enables stability the speed and objectivity of automatic systems with the contextual knowledge and 
+experience of human buyers. 
+V.EMPIRICAL FINDINGS AND THEIR IMPLICATIONS 
+We evaluated the efficiency of machine learning-based automated trading methods in the Indian stock market using 
+past stock data from the National Stock Exchange (NSE). Over a ten-year period (2013–2023), the models were tested 
+on certain stocks like Reliance Industries, T CS, and HDFC Bank. The results show that, in terms of trading 
+performance, machine learning techniques beat conventional approaches, therefore boosting profitability and risk 
+control. 
+Table 2. Model Performance Comparison for Stock Price Prediction 
+Model Accuracy 
+(%) 
+MAE 
+(₹) 
+RMSE 
+(₹) 
+Sharpe 
+Ratio 
+Annualized Return 
+(%) 
+Moving Average Strategy 58.3 12.8 18.4 0.82 10.5 
+Random Forest 72.1 9.5 13.6 1.10 14.8 
+Long Short-Term Memory (LSTM) 81.4 6.8 9.4 1.45 18.2 
+Support Vector Machine (SVM) 76.5 8.2 11.2 1.25 16.3 
+Deep Q-Networks (DQN) 84.2 5.6 8.7 1.58 19.6 
+Proximal Policy Optimization (PPO) 86.7 5.2 8.1 1.67 21.3 
+This information shows how accurately, error -free, and income generatingly  different machine learning models 
+perform. In stock price prediction, the LSTM model topped conventional moving averages with an accuracy of 58.3%. 
+With PPO rightly answering 86.7% of the questions, Deep Q -Networks (DQN) and Proximal Policy Optimization 
+(PPO) were the most accurate models. With their lowest Mean Absolute Error (MAE) and Root Mean Square Error 
+(RMSE), reinforcement learning models proved to be the most exact. Strong also was PPO's Sharpe Ratio (1.67), 
+which shows higher risk -adjusted returns. Furthermore, doing well were LSTM and SVM (Table 2). With a 21.3% 
+annualized return, PPO also exceeded all other strategies. This shows how adaptable reinforcement learning 
+techniques may be to the times, hence increasing their value. 
+ 
+Figure 3. Diagrammatical Representation of Model Performance Comparison for Stock Price 
+Prediction 
+
+789  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+Forecasting short-term fluctuations in stock prices, the Long Short-Term Memory (LSTM) model showed quite good 
+performance. It identified patterns and possible direction changes more successfully than standard moving average 
+approaches. Having a Sharpe Ratio of 1.45, the model showed a good risk -adjusted return. Moreover, LSTM 
+predictions exceeded conventional statistical models in terms of prediction accuracy; this is shown by the lower Mean 
+Absolute Error (MAE) and Root Mean Square Error (RMSE) (Figure 3 above). Deep learning methods are useful for 
+short-term trading strategies as they can adequately show how stock prices change over time. 
+Table 3. Profitability Comparison of Trading Strategies 
+Strategy Annualized 
+Return (%) 
+Maximum 
+Drawdown (%) 
+Win 
+Rate (%) 
+Risk-Adjusted Return 
+(Sharpe Ratio) 
+Buy & Hold 12.1 -34.2 54.8 0.85 
+Moving Average 
+Crossover 
+14.7 -28.3 57.6 0.92 
+LSTM-Based Trading 18.2 -22.5 65.4 1.45 
+DQN-Based Strategy 19.6 -20.2 68.1 1.58 
+PPO-Based Strategy 21.3 -18.4 70.5 1.67 
+This data investigates the profitability and risk -adjusted Ness of numerous trading methods. Although they raised 
+risk, conventional "buy and hold" techniques provided investors with an annualized return of 12.1% and a worst-case 
+loss of -34.2%. Moving average techniques suffered large losses, although they did see a little rise in profits (14.7% 
+vs. -28.3%). Clearly better were machine learning-based approaches like LSTM (18.2%) and DQN (19.6%) with larger 
+profits and less losses. Table 3 shows that, with a 21.3% gain and a -18.4% loss, the PPO -based approach fared the 
+best. PPO had a higher win rate for ML models as 70.5% of trades were successful, thereby sugg esting better trade 
+performance and market adaptation. 
+ 
+Figure 4. Diagrammatical Representation of Profitability Comparison of Trading Strategies 
+Adaptive trading benefited much from reinforcement learning-based techniques, especially Deep Q-Networks (DQN) 
+and Proximal Policy Optimisation (PPO). These algorithms developed with the market, picking over time the optimal 
+trading techniques. The reinforcement learning agent was taught to optimise general earnings while limiting losses. 
+In terms of annualised return, back testing found the DQN -based approach to be better than buy -and- hold and 
+moving average-based strategies. The PPO model even further improved the issue by raising deal execution efficiency, 
+lowering needless transactions, and lowering transaction costs (see Figure 4 above). These results show how well 
+reinforcement learning may create self-governing trading systems able to manage erratic markets. 
+
+790  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+Table 4. Volatility and Risk Management Performance 
+Model Volatility Reduction 
+(%) 
+Maximum Drawdown 
+(%) 
+Stop-Loss Efficiency 
+(%) 
+Moving Average Strategy 0.0 -28.3 50.2 
+Random Forest 12.5 -24.7 58.3 
+LSTM 19.8 -22.5 64.1 
+DQN 25.3 -20.2 68.7 
+PPO 30.5 -18.4 72.9 
+This information largely refers to the degree of effectiveness various models have in managing market swings and 
+lowered risk exposure. Old methods caused notable drawdowns, but volatility did not change. Certain ML models —
+such as DQN (which reduced volatility by 25.3%), and PPO (30.5%)—were shown to be steadier and more robust than 
+others. PPO had the greatest stop-loss rate (72.9%), meaning it did so at the most opportune times to help to lower 
+losses. With its lowest loss of 18.4%, Table 4 above shows that the PPO is quite efficient at shielding against 
+substantial market declines. Generally speaking, ML-based models outperformed traditional methods in controlling 
+market fluctuations, so they are better suitable for situations where market volatility is a factor of importance. 
+ 
+Figure 5. Diagrammatical Representation of Volatility and Risk Management Performance 
+Performance-wise, standard technical indicators such Moving Averages, RSI, and MACD obviously varied from ML-
+based trading techniques. While traditional methods follow set guidelines, ML -based models change to fit the 
+situation in the market. Based on the data, machine learning models cut the most loss—25%. This suggests that they 
+were more successful in shielding investors from major losses when the market fell. While machine learning 
+algorithms were able to identify minute trends in stock price movements,  traditional measurements failed. This 
+highlighted yet another more how much more accurate their future projections were. One of machine learning's major 
+advantages was its capacity to help traders avoid emotionally motivated incorrect decisions. Figure 5 shows how 
+sometimes driven by fear or greed, human traders make hasty judgements that result in transactions less successfully 
+than they may be. By contrast, machine learning (ML) algorithms provide planned, data-driven assessments ensuring 
+constant trading activity. Automated trading lets traders focus on risk management and strategy development instead 
+of personally completing deals by lowering the volume of physical work needed. 
+Table 5. Transaction Cost and Trade Execution Efficiency 
+Strategy Average Trade 
+Execution Time (ms) 
+Transaction Cost (% of 
+Trade Value) 
+Number of 
+Trades Per Year 
+Profit Per 
+Trade (₹) 
+Moving Average 
+Strategy 
+250 0.10 320 1,250 
+Random Forest 180 0.08 290 1,540 
+LSTM-Based 
+Trading 
+140 0.06 270 1,920 
+
+791  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+DQN-Based 
+Strategy 
+95 0.05 250 2,180 
+PPO-Based 
+Strategy 
+80 0.04 230 2,450 
+This information looks at how well every approach closes deals and reduces costs. More expensive (0.10% per 
+transaction) older trading techniques like moving averages need 250 ms to execute. Thanks to ML -based 
+approaches—especially DQN and PPO —deals transpired faster (95 ms vs. 80 ms) and for less money (0.05% vs. 
+0.04%). ML models also made less but more successful transactions yearly, which increased the total number of 
+trades. While the PPO -based model made the greatest (₹2,450) the moving average technique only earned ₹1,250 
+per transaction (see Table 5 above). This shows how well reinforcement learning reduces costs and boosts trade 
+earnings. 
+ 
+Figure 6. Diagrammatical Representation of Transaction Cost and Trade Execution Efficiency 
+Although the results are encouraging, certain problems have to be fixed before machine learning -based trading can 
+be used effectively in the Indian stock market. First, in terms of both count and quality, statistics remain a main 
+concern. The performance o f machine learning models depends on accurate, high -quality data; nevertheless, in 
+Indian markets this is not always feasible or consistent. Including extra data sources —such as news mood analysis 
+and social media trends —may help to increase the model's ac curacy yet further. Still another big problem is the 
+difficulties laws create. Particularly with relation to high -frequency trading (HFT), computer trading is under strict 
+rules established by the Securities and Exchange Board of India (SEBI). Although ML -based models enable traders 
+to make better decisions, they have to follow SEBI rules, which can make it more challenging to fully use certain 
+advanced strategies. While following the law and morals, companies and traders have to make sure their models stay 
+lucrative. Two further problems that need attention are overfitting and computational challenges, as Figure 6 shows. 
+Deep learning models, including LSTMs, are more difficult for small companies to use as they need a lot of processing 
+capability. Another issue is overfitting, in which case models trained on past data perform badly in new settings. To 
+guarantee that they can keep altering to fit new market conditions, ML models need strong evaluation methods and 
+regularizing techniques. The results show the  huge possibilities of automated trading techniques derived from 
+machine learning for the Indian stock market. They are more exact, flexible, and efficient than previous methods, 
+which lets buyers maximize returns and decrease risk by means of them. Noneth eless, a few main problems have to 
+be addressed if the execution is to be successful: restricted processing capability, data quality, and regulatory 
+compliance. Future studies should investigate blended models combining real -time mood monitoring with many 
+machine learning approaches to improve trading even further.  
+VI.CONCLUSION 
+This research demonstrates that system mastering-based totally automated trading strategies provide large blessings 
+within the Indian stock marketplace by way of enhancing predictive accuracy, optimizing trade execution, and 
+improving danger management. conventional buying and selling methods, along with moving averages and buy-and-
+preserve strategies, fail to conform to hastily changing marketplace situations, whereas ML-primarily based models, 
+
+792  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+specifically LSTM, Deep Q-Networks (DQN), and Proximal policy Optimization (PPO), exhibit superior performance 
+in terms of profitability and volatility reduction. The PPO-primarily based approach finished the very best annualized 
+go back (21.3%) with a 70. 5% win charge, demonstrating its capacity to generate steady income while coping with 
+hazard correctly. The study also highlights the performance of AI -driven models in decreasing transaction fees and 
+optimizing trade execution. device getting to know techniques done trades significantly faster (80ms for PPO) and at 
+decrease charges (0.04% consistent with exchange), making them more value -effective than traditional tactics. 
+additionally, volatility discount (30.5% for PPO) and superior prevent -loss performance (72.9%) advise that ML -
+primarily based fashions offer advanced chance mitigation, shielding buyers from huge drawdowns all through 
+market downturns. despite their Marvelous overall performance, positive challenges stay, including data nice 
+troubles, regulatory constraints, and overfitting dangers. The effectiveness of ML fashions relies upon on exceptional, 
+real-time records, that is frequently confined within the Indian market. additionally, SEBI’s regulatory framework 
+for algorithmic buying and selling imposes restrictions which can preclude the total deployment of AI-driven buying 
+and selling systems. destiny studies need to recognition on integrating opportunity records resources (inclusive of 
+news sentiment evaluation), refining version architectures, and ensuring compliance with market regulations. system 
+getting to know-primarily based automatic trading techniques have the capability to revolutionize stock trading in 
+India. by means of leveraging deep mastering and reinforcement learning, investors  can obtain higher returns, 
+decreased hazard, and advanced trade execution. while demanding situations exist, continued advancements in AI 
+and financial generation will probably pave the way for greater efficient, adaptable, and worthwhile trading structures 
+within the future. 
+REFERENCES 
+[1] B. Jin, "A Mean -VaR Based Deep Reinforcement Learning Framework for Practical Algorithmic Trading", 
+IEEE Access, vol. 11, pp. 28920-28933, 2023. 
+[2] Y. -F. Chen, W. -Y. Shih, H. -C. Lai, H. -C. Chang and J. -L. Huang, "Pairs Trading Strategy Optimization 
+Using Proximal Policy Optimization Algorithms", 2023 IEEE International Conference on Big Data and 
+Smart Computing (BigComp), pp. 40-47, 2023. 
+[3] P. M. Fiorini and P. -G. Fiorini, "A Simple Reinforcement Learning Algorithm for Stock Trading", 2021 11th 
+IEEE International Conference on Intelligent Data Acquisition and Advanced Computing Systems: 
+Technology and Applications (IDAACS), pp. 824-830, 2021. 
+[4] R. Bhuvaneswari and S. Ganesh Vaidyanathan, "Classification and grading of diabetic retinopathy images 
+using mixture of ensemble classifiers", Journal of Intelligent & Fuzzy Systems, vol. 41, no. 6, pp. 7407-7419, 
+2021. 
+[5] B. Natarajan, R. Elakkiya, R. Bhuvaneswari, K. Saleem, D. Chaudhary and S. H. Samsudeen, "Creating Alert 
+messages based on Wild Animal Activity Detection using Hybrid Deep Neural Networks", IEEE Access, 2023. 
+[6] Z. Peng, "Stocks analysis and prediction using big data analytics", Proc. Int. Conf. Intell. Transp. Big Data 
+Smart City (ICITBS), pp. 309-312, Jan. 2019. 
+[7] Y. Li, P. Liu and Z. Wang, "Stock trading strategies based on deep reinforcement learning", Sci. Program., 
+vol. 2022, pp. 1-15, Mar. 2022. 
+[8] J. Chen, C. Luo, L. Pan and Y. Jia, "Trading strategy of structured mutual fund based on deep learning 
+network", Expert Syst. Appl., vol. 183, Nov. 2021. 
+[9] Sedighi, M.; Jahangirnia, H.; Gharakhani, M.; Fard, S.F. A Novel Hybrid Model for Stock Price Forecasting 
+Based on Metaheuristics and Support Vector Machine. Data 2019, 4, 75.  
+[10] Khan, W.; Malik, U.; Ghazanfar, M.A.; Azam, M.A.; Alyoubi, K.H.; Alfakeeh, A. Predicting stock market 
+trends using machine learning algorithms via public sentiment and political situation analysis. Soft Comput. 
+2019, 24, 11019–11043.  
+[11] Dey, R., Kassim, S., Maurya, S., Mahajan, R. A., Kadia, A., & Singh, M. (2024). Machine learning -based 
+financial stock market trading strategies with moving average, stochastic relative strength index, and price 
+volume actions for Indian and Malaysian stoc k market. Journal of Electrical Systems, 20(2s). 
+https://doi.org/10.52783/jes.1576 
+[12] Dey, R., Kassim, S., Maurya, S., Mahajan, R. A., Kadia, A., & Singh, M. (2024). A systematic literature review 
+on the Islamic capital market: Insights using the PRISMA approach. Journal of Electrical Systems, 20(2s). 
+https://doi.org/10.52783/jes.1571 
+793  
+ 
+J INFORM SYSTEMS ENG, 10(26s) 
+[13] Dey, R., Kassim, S., Maurya, S., Mahajan, R. A., Kadia, A., & Singh, M. (2024). Machine learning -based 
+automated trading strategies for Indian stock market. Journal of Electrical Systems, 20(2s). 
+https://doi.org/10.52783/jes.1572 
+[14] Dey, R., Kassim, S., Kumar, P., Mandal, R., Kar, A., & Singh, M. (2024). Applications of machine learning in 
+Islamic finance: A review. Journal of Electrical Systems, 20(11s). Retrieved from 
+https://journal.esrgroups.org/jes/article/view/7576 
+[15] Dey, R., Kassim, S., Kumar, P., Islam, K. M., De, A., & Singh, M. (2024). The application of predictive learning 
+in Islamic finance: A review. Journal of Electrical Systems, 20(11s). Retrieved from 
+https://journal.esrgroups.org/jes/article/view/7577 
+[16] Y. Ansari et al., "A Deep Reinforcement Learning -Based Decision Support System for Automated Stock 
+Market Trading", IEEE Access, vol. 10, pp. 127469-127501, 2022. 
+[17] T. Bai, Q. Lang, S. Song, Y. Fang and X. Liu, "Feature Fusion Deep Reinforcement Learning Approach for 
+Stock Trading", 2022 41st Chinese Control Conference (CCC), pp. 7240-7245, 2022. 
+[18] L. Hao, B. Wang, Z. Lu and K. Hu, "Application of Deep Reinforcement Learning in Financial Quantitative 
+Trading", 2022 4th International Conference on Communications Information System and Computer 
+Engineering (CISCE), pp. 466-471, 2022. 
